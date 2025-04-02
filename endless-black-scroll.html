@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unscroll.space - A Meditative Break from Social Media</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #333;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+        
+        #content {
+            min-height: 200vh;
+            position: relative;
+        }
+        
+        #loader {
+            opacity: 0;
+        }
+        
+        #start-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #444;
+            text-align: center;
+            font-size: 24px;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .hidden {
+            opacity: 0 !important;
+        }
+        
+        #counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #333;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        #controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            background-color: #111;
+            color: #333;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        button:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <!-- This div will grow infinitely -->
+    </div>
+    
+    <div id="start-message">
+        <p>Scroll down to unscroll your mind.<br>A quiet space to breathe in the digital void.</p>
+    </div>
+    
+    <div id="loader"></div>
+    
+    <div id="counter">
+        Scrolled: 0 pixels
+    </div>
+    
+    <div id="controls">
+        <button id="toggle-message">Toggle Message</button>
+        <button id="toggle-counter">Toggle Counter</button>
+    </div>
+    
+    <script>
+        // Variables to track scrolling
+        let scrollHeight = 0;
+        let lastScrollTop = 0;
+        let scrollCounter = 0;
+        let startMessageVisible = true;
+        let counterVisible = true;
+        
+        // Elements
+        const content = document.getElementById('content');
+        const loader = document.getElementById('loader');
+        const counter = document.getElementById('counter');
+        const startMessage = document.getElementById('start-message');
+        const toggleMessageBtn = document.getElementById('toggle-message');
+        const toggleCounterBtn = document.getElementById('toggle-counter');
+        
+        // Detect scroll and dynamically add more content
+        window.addEventListener('scroll', function() {
+            // Update counter
+            const currentScroll = window.scrollY;
+            scrollCounter = Math.max(scrollCounter, currentScroll);
+            counter.textContent = `Scrolled: ${Math.floor(scrollCounter)} pixels`;
+            
+            // Hide start message after scrolling begins
+            if (currentScroll > 50 && startMessageVisible) {
+                startMessage.classList.add('hidden');
+            }
+            
+            // Check if we're near the bottom
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+                // Add more height to create endless scrolling
+                content.style.minHeight = (parseInt(getComputedStyle(content).minHeight) + 2000) + 'px';
+            }
+        });
+        
+        // Toggle message visibility
+        toggleMessageBtn.addEventListener('click', function() {
+            startMessageVisible = !startMessageVisible;
+            if (startMessageVisible) {
+                startMessage.classList.remove('hidden');
+            } else {
+                startMessage.classList.add('hidden');
+            }
+        });
+        
+        // Toggle counter visibility
+        toggleCounterBtn.addEventListener('click', function() {
+            counterVisible = !counterVisible;
+            if (counterVisible) {
+                counter.style.display = 'block';
+            } else {
+                counter.style.display = 'none';
+            }
+        });
+        
+        // Make sure we have enough initial height
+        window.addEventListener('load', function() {
+            content.style.minHeight = (window.innerHeight * 3) + 'px';
+        });
+    </script>
+</body>
+</html>
